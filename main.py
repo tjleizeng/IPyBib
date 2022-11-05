@@ -27,15 +27,22 @@ def extract_title(html_text):
         fontSize = re.findall("font-size:(\d+)",styleTag)
         usedFontSize.append(int(fontSize[0]))
         
-    max_font = max(usedFontSize)
+    usedFontSize = sorted(set(usedFontSize))
     
-    title_text = []
-    for span in spans:
-        #print span['style']
-        styleTag = span['style']
-        fontSize = re.findall("font-size:(\d+)",styleTag)
-        if int(fontSize[0]) == max_font:
-            title_text.append(span.text)
+    while True:
+        max_font = usedFontSize[-1]
+        usedFontSize = usedFontSize[:-1]
+        title_text = []
+        for span in spans:
+            #print span['style']
+            styleTag = span['style']
+            fontSize = re.findall("font-size:(\d+)",styleTag)
+            if int(fontSize[0]) == max_font:
+                title_text.append(span.text)
+        if(len(title_text[0]) < 10): # Less than 10 letters, more likely to be journal name
+            max_font = usedFontSize[-1]
+        else:
+            break
     
     return ''.join(title_text).strip()
 
@@ -73,7 +80,7 @@ if __name__ == '__main__':
     if(os.path.isfile(output_folder+"/" + name+".ipynb")):
         with open(output_folder+"/" + name+".ipynb", 'r') as f:
             res = json.load(f)
-        cell_id = res['cells'][-1]['id'] + 1
+        cell_id = int(res['cells'][-1]['id']) + 1
     else:
         res = { "cells": [], 
            "metadata": {
