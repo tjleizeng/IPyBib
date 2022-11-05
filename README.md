@@ -1,5 +1,5 @@
 # PyBib
-This is a simple Yython script for automated generating lists for literature.
+This is a simple Python script for automated generating lists for literature.
 
 The input is the folder with a bunch of PDF files (your literature), and the output is an IPython Notebook with links to local files and google scholar links.
 
