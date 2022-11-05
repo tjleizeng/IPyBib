@@ -8,7 +8,6 @@ import re
 import json
 import argparse
 
-
 def get_arguments(argv):
     parser = argparse.ArgumentParser(description='PyBib')
     # Simulation settings
@@ -18,6 +17,7 @@ def get_arguments(argv):
 
     return args
 
+# Function to extract title from pdf
 def extract_title(html_text):
     soup = BeautifulSoup(html_text)
     spans = soup.find_all('span',style=True)
@@ -69,6 +69,7 @@ if __name__ == '__main__':
 
     print("Your output name is " + name)
 
+    # Get all the files in the folder
     if(os.path.isfile(output_folder+"/" + name+".ipynb")):
         with open(output_folder+"/" + name+".ipynb", 'r') as f:
             res = json.load(f)
@@ -98,6 +99,7 @@ if __name__ == '__main__':
             "nbformat_minor": 5
         }
         cell_id = 0
+    
     for paper in os.listdir(input_folder):
         doc = fitz.open(input_folder + paper)
         html_text = ''
@@ -130,7 +132,8 @@ if __name__ == '__main__':
             cell_id+=1
             res['cells'].append(one_cell)
             res['cells'].append(empty_cell)
-
+    
+    # Save the notebook
     with open(output_folder+"/" + name+".ipynb", 'w') as f:
         json.dump(res, f)
 
