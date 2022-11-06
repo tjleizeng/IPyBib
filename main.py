@@ -39,7 +39,7 @@ def extract_title(html_text):
             fontSize = re.findall("font-size:(\d+)",styleTag)
             if int(fontSize[0]) == max_font:
                 title_text.append(span.text)
-        if(len(title_text[0]) < 10 and len(usedFontSize)>0): # Less than 10 letters, more likely to be journal name
+        if((len(title_text[0]) < 10 or 'arXiv' in title_text[0]) and len(usedFontSize)>0): # Less than 10 letters, more likely to be journal name
             max_font = usedFontSize[-1]
         else:
             break
