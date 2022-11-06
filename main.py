@@ -29,7 +29,7 @@ def extract_title(html_text):
         
     usedFontSize = sorted(set(usedFontSize))
     
-    while True:
+    while True and len(usedFontSize)>0:
         max_font = usedFontSize[-1]
         usedFontSize = usedFontSize[:-1]
         title_text = []
@@ -39,7 +39,7 @@ def extract_title(html_text):
             fontSize = re.findall("font-size:(\d+)",styleTag)
             if int(fontSize[0]) == max_font:
                 title_text.append(span.text)
-        if(len(title_text[0]) < 10): # Less than 10 letters, more likely to be journal name
+        if(len(title_text[0]) < 10 and len(usedFontSize)>0): # Less than 10 letters, more likely to be journal name
             max_font = usedFontSize[-1]
         else:
             break
@@ -110,8 +110,12 @@ if __name__ == '__main__':
     for paper in os.listdir(input_folder):
         doc = fitz.open(input_folder + paper)
         html_text = ''
+        count = 0
         for page in doc:
             html_text += page.get_text('html')
+            count += 1
+            if(count > 3): #Only extract the first 3 pages
+                break
         title = extract_title(html_text)
         local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
         if local_link not in res:
