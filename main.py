@@ -69,18 +69,19 @@ if __name__ == '__main__':
 
     local_dir =  '\\'.join(input_folder.split("\\")[-4:])
 
-    print("Your input folder is " + output_folder)
-
     if name == "":
         name = input_folder.split("\\")[-2]
 
-    print("Your output name is " + name)
+    print("Your output file is " + output_folder + "\\"+ name + ".ipynb")
 
     # Get all the files in the folder
+    res_links = []
     if(os.path.isfile(output_folder+"/" + name+".ipynb")):
-        with open(output_folder+"/" + name+".ipynb", 'r') as f:
+        with open(output_folder+"/" + name+".ipynb", 'r', encoding="utf8") as f:
             res = json.load(f)
         cell_id = int(res['cells'][-1]['id']) + 1
+        res_links = [cell['source'][1][6:-2] for cell in res['cells'] if cell['source'][0].startswith("###")]
+        # print(res_links)
     else:
         res = { "cells": [], 
            "metadata": {
@@ -118,7 +119,7 @@ if __name__ == '__main__':
                 break
         title = extract_title(html_text)
         local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
-        if local_link not in res:
+        if local_link not in res_links:
             remote_link = "https://scholar.google.com/scholar?q="+title.replace(" ", "%20")
 
             one_cell = {
