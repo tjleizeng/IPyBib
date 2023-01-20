@@ -28,7 +28,7 @@ def extract_title(html_text):
         usedFontSize.append(int(fontSize[0]))
         
     usedFontSize = sorted(set(usedFontSize))
-    
+    title_text = []
     while True and len(usedFontSize)>0:
         max_font = usedFontSize[-1]
         usedFontSize = usedFontSize[:-1]
@@ -109,17 +109,31 @@ if __name__ == '__main__':
         cell_id = 0
     
     for paper in os.listdir(input_folder):
-        doc = fitz.open(input_folder + paper)
-        html_text = ''
-        count = 0
-        for page in doc:
-            html_text += page.get_text('html')
-            count += 1
-            if(count > 3): #Only extract the first 3 pages
-                break
-        title = extract_title(html_text)
+       
         local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
         if local_link not in res_links:
+            doc = fitz.open(input_folder + paper)
+            html_text = ''
+            count = 0
+            for page in doc:
+                html_text += page.get_text('html')
+                count += 1
+                if(count > 3): #Only extract the first 3 pages
+                    break
+            title = extract_title(html_text)
+            
+            
+            # post process
+            title = title.replace("Transportation Research Part D", "")
+            title = title.replace("Transportation Research Part C", "")
+            title = title.replace("Transportation Research Part B", "")
+            title = title.replace("Transportation Research Part A", "")
+            title = title.replace("TransportationResearchPartB", "")
+            title = title.replace("ScienceDirect", "")
+            if(len(title) > 200 or len(title) < 5):
+                title  = "Need manual check"
+
+            print(title)
             remote_link = "https://scholar.google.com/scholar?q="+title.replace(" ", "%20")
 
             one_cell = {
@@ -148,11 +162,6 @@ if __name__ == '__main__':
     # Save the notebook
     with open(output_folder+"/" + name+".ipynb", 'w') as f:
         json.dump(res, f)
-
-
-
-
-
 
 
 # In[ ]:
