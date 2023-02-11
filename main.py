@@ -142,7 +142,7 @@ if __name__ == '__main__':
                "metadata": {},
                "source": [
                 "### "+title+"\n",
-                 "[PDF]("+local_link+")" +"\n",
+                 "[PDF]("+local_link.replace("\\","/")+")" +"\n",
                  "<a href=\""+remote_link+"\">Google Scholar</a>"
                ]
               }
