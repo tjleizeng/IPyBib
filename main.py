@@ -110,7 +110,7 @@ if __name__ == '__main__':
     
     for paper in os.listdir(input_folder):
        
-        local_link = local_dir.replace(" ", "%20").replace("\\","/") + paper.replace(" ", "%20")
+        local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
         if local_link not in res_links:
             doc = fitz.open(input_folder + paper)
             html_text = ''
@@ -143,7 +143,7 @@ if __name__ == '__main__':
                "metadata": {},
                "source": [
                 "### "+title+"\n",
-                 "[PDF]("+local_link+")" +"\n",
+                 "[PDF]("+local_link.replace("\\","/")+")" +"\n",
                  "<a href=\""+remote_link+"\">Google Scholar</a>"
                ]
               }
