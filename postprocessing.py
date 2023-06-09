@@ -24,6 +24,7 @@ if __name__ == '__main__':
     args = get_arguments(sys.argv[1:])
 
     input_folder = args.input_folder
+    output_folder = args.output_folder
     name = args.name
 
     print("Your input folder is " + input_folder)
@@ -80,7 +81,7 @@ if __name__ == '__main__':
         cell_id = 0
     
     for paper in os.listdir(input_folder):
-        local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
+        local_link = local_dir.replace(" ", "%20").replace("\\","/") + paper.replace(" ", "%20")
         if local_link not in res_links:
             # delete the paper since it is not in the notebook after we have updated the notebook
             if os.path.isfile(input_folder + paper):

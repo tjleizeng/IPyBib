@@ -124,6 +124,7 @@ if __name__ == '__main__':
             
             
             # post process
+            title = title.replace("Transportation Research Part E", "")
             title = title.replace("Transportation Research Part D", "")
             title = title.replace("Transportation Research Part C", "")
             title = title.replace("Transportation Research Part B", "")
