@@ -24,7 +24,6 @@ if __name__ == '__main__':
     args = get_arguments(sys.argv[1:])
 
     input_folder = args.input_folder
-    output_folder = args.output_folder
     name = args.name
 
     print("Your input folder is " + input_folder)
