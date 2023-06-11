@@ -152,7 +152,10 @@ if __name__ == '__main__':
                     break
             title = extract_title(html_text)
 
-            summary = summarize_text(html_text)
+            try:
+                summary = summarize_text(html_text)
+            except:
+                summary = ""
             
             # post process
             title = title.replace("Transportation Research Part E", "")
