@@ -1,5 +1,5 @@
 # IPyBib
-These are Python scripts for generating a maintainable literature review documents from raw pdf files.
+These are Python scripts for generating a maintainable literature review documents, with titles, local &remote links, GPT-written summaries from raw pdf files.
 
 The input is the folder with a bunch of PDF files (no need to rename or organize it!), and the output is an IPython Notebook with links to local files and google scholar links.
 
