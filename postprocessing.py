@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import argparse
+import platform
 
 def get_arguments(argv):
     parser = argparse.ArgumentParser(description='PyBib Cleaner')
@@ -20,6 +21,12 @@ def get_arguments(argv):
 
 # Try to load the notebook in the traget directory
 if __name__ == '__main__':
+    # Check the system
+    if platform.system() == "Windows":
+        splitter = "\\"
+    else:
+        splitter = "/"
+
     # Configuration
     args = get_arguments(sys.argv[1:])
 
@@ -31,19 +38,19 @@ if __name__ == '__main__':
     if input_folder == "":
         print("Input folder cannot be empty")
 
-    if not input_folder.endswith("\\"):
-        input_folder += "\\"
+    if not input_folder.endswith(splitter):
+        input_folder += splitter
 
-    input_folder = input_folder.replace("\\\\", "\\")
+    if platform.system() == "Windows": input_folder = input_folder.replace("\\\\", "\\")
 
-    output_folder = '\\'.join(input_folder.split("\\")[:-4])
+    output_folder = splitter.join(input_folder.split(splitter)[:-4])
 
-    local_dir =  '\\'.join(input_folder.split("\\")[-4:])
+    local_dir =  '/'.join(input_folder.split(splitter)[-4:])  # local dir need not to be changed accroding to the system
 
     if name == "":
-        name = input_folder.split("\\")[-2]
+        name = input_folder.split(splitter)[-2]
 
-    print("Your output file is " + output_folder + "\\"+ name + ".ipynb")
+    print("Your output file is " + output_folder + splitter+ name + ".ipynb")
 
     # Get all the files in the folder
     res_links = []
@@ -51,8 +58,7 @@ if __name__ == '__main__':
         with open(output_folder+"/" + name+".ipynb", 'r', encoding="utf8") as f:
             res = json.load(f)
         cell_id = int(res['cells'][-1]['id']) + 1
-        res_links = [cell['source'][1][6:-2] for cell in res['cells'] if cell['source'][0].startswith("###")]
-        # print(res_links)
+        res_links = [cell['source'][1][9:-10] for cell in res['cells'] if cell['source'][0].startswith("###")]
     else:
         res = { "cells": [], 
            "metadata": {
@@ -80,7 +86,7 @@ if __name__ == '__main__':
         cell_id = 0
     
     for paper in os.listdir(input_folder):
-        local_link = local_dir.replace("\\","/") + paper
+        local_link = local_dir + paper
         if local_link not in res_links:
             # delete the paper since it is not in the notebook after we have updated the notebook
             if os.path.isfile(input_folder + paper):
