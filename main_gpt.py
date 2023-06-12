@@ -8,6 +8,7 @@ import re
 import json
 import argparse
 import openai
+import platform
 
 # your OpenAI API key
 openai.api_key = 'sk_YOUR_OPENAI_API_KEY'
@@ -80,6 +81,11 @@ def summarize_text(html_text):
 
 # Try to load the notebook in the traget directory
 if __name__ == '__main__':
+    # Check the system
+    if platform.system() == "Windows":
+        splitter = "\\"
+    else:
+        splitter = "/"
     # Configuration
     args = get_arguments(sys.argv[1:])
 
@@ -91,28 +97,27 @@ if __name__ == '__main__':
     if input_folder == "":
         print("Input folder cannot be empty")
 
-    if not input_folder.endswith("\\"):
-        input_folder += "\\"
+    if not input_folder.endswith(splitter):
+        input_folder += splitter
 
-    input_folder = input_folder.replace("\\\\", "\\")
+    if platform.system() == "Windows": input_folder = input_folder.replace("\\\\", "\\")
 
-    output_folder = '\\'.join(input_folder.split("\\")[:-4])
+    output_folder = splitter.join(input_folder.split(splitter)[:-4])
 
-    local_dir =  '\\'.join(input_folder.split("\\")[-4:])
+    local_dir =  '/'.join(input_folder.split(splitter)[-4:])  # local dir need not to be changed accroding to the system
 
     if name == "":
-        name = input_folder.split("\\")[-2]
+        name = input_folder.split(splitter)[-2]
 
-    print("Your output file is " + output_folder + "\\"+ name + ".ipynb")
+    print("Your output file is " + output_folder + splitter+ name + ".ipynb")
 
     # Get all the files in the folder
     res_links = []
-    if(os.path.isfile(output_folder+"/" + name+".ipynb")):
-        with open(output_folder+"/" + name+".ipynb", 'r', encoding="utf8") as f:
+    if(os.path.isfile(output_folder + splitter + name+".ipynb")):
+        with open(output_folder + splitter + name+".ipynb", 'r', encoding="utf8") as f:
             res = json.load(f)
         cell_id = int(res['cells'][-1]['id']) + 1
-        res_links = [cell['source'][1][6:-2] for cell in res['cells'] if cell['source'][0].startswith("###")]
-        # print(res_links)
+        res_links = [cell['source'][1][9:-10] for cell in res['cells'] if cell['source'][0].startswith("###")]
     else:
         res = { "cells": [], 
            "metadata": {
@@ -140,7 +145,7 @@ if __name__ == '__main__':
         cell_id = 0
     
     for paper in os.listdir(input_folder):
-        local_link = local_dir.replace(" ", "%20") + paper.replace(" ", "%20")
+        local_link = local_dir + paper
         if local_link not in res_links:
             doc = fitz.open(input_folder + paper)
             html_text = ''
@@ -177,8 +182,8 @@ if __name__ == '__main__':
                "metadata": {},
                "source": [
                 "### "+title+"\n",
-                 "[PDF]("+local_link.replace("\\","/")+")" +"\n",
-                 "<a href=\""+remote_link+"\">Google Scholar</a>"
+                "<a href=\""+local_link+"\">PDF</a>" +"\n",
+                "<a href=\""+remote_link+"\">Google Scholar</a>"
                ]
               }
             cell_id+=1

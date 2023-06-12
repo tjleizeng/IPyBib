@@ -13,7 +13,6 @@ def get_arguments(argv):
 
 
 if __name__ == '__main__':
-    # Configuration
     args = get_arguments(sys.argv[1:])
 
     input = args.input_file.replace("\\\\", "/")

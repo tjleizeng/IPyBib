@@ -1,3 +1,4 @@
 pymupdf
 bs4
 openai
+platform

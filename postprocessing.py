@@ -80,7 +80,7 @@ if __name__ == '__main__':
         cell_id = 0
     
     for paper in os.listdir(input_folder):
-        local_link = local_dir.replace(" ", "%20").replace("\\","/") + paper.replace(" ", "%20")
+        local_link = local_dir.replace("\\","/") + paper
         if local_link not in res_links:
             # delete the paper since it is not in the notebook after we have updated the notebook
             if os.path.isfile(input_folder + paper):
