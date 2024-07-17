@@ -1,4 +1,6 @@
+# install pytorch use the instruction from https://pytorch.org/
 pymupdf
 bs4
-openai
-platform
+lib-platform
+transformers
+accelerate
